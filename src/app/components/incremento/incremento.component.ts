@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
 
 @Component({
   selector: 'app-incremento',
@@ -7,25 +8,31 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IncrementoComponent implements OnInit {
 
-  progreso: number = 50;
+  @Input() progreso: number = 50;
+  @Input() btnStyle: string = '';
+  @Output() valor: EventEmitter<number> = new EventEmitter<number>();
+  btn: string = 'btn btn-primary'
   constructor() { }
 
   ngOnInit(): void {
+    (this.btnStyle) === '' ? this.btnStyle = this.btn : this.btnStyle;
   }
 
   cambioPorcentaje(valor: number) {
 
-    this.progreso = this.progreso + valor;
-
     if( this.progreso >= 100 && valor >= 0){
+      this.valor.emit(100);
       this.progreso = 100;
+      return
     }
     if( this.progreso <= 0 && valor < 0){
+      this.valor.emit(0);
       this.progreso = 0;
+      return
     }
 
+    this.progreso = this.progreso + valor;
+    this.valor.emit(this.progreso);
+
   }
-
-  get getProgreso() { return `${this.progreso}%`; }
-
 }
